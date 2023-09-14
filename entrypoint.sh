@@ -38,23 +38,12 @@ fi
 if ! flyctl status --app "$app"; then
   # Backup the original config file since 'flyctl launch' messes up the [build.args] section
   cp "$config" "$config.bak"
-  flyctl launch --no-deploy --copy-config --name "$app" --image "$image" --region "$region" --org "$org"
+  flyctl launch --no-deploy --copy-config --name "$app" --region "$region" --org "$org" --dockerfile Dockerfile
   # Restore the original config file
   cp "$config.bak" "$config"
 fi
 if [ -n "$INPUT_SECRETS" ]; then
   echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
-fi
-
-# Scale the VM before the deploy.
-if [ -n "$INPUT_VM" ]; then
-  flyctl scale --app "$app" vm "$INPUT_VM"
-fi
-if [ -n "$INPUT_MEMORY" ]; then
-  flyctl scale --app "$app" memory "$INPUT_MEMORY"
-fi
-if [ -n "$INPUT_COUNT" ]; then
-  flyctl scale --app "$app" count "$INPUT_COUNT"
 fi
 
 # Attach postgres cluster to the app if specified.
@@ -64,7 +53,7 @@ fi
 
 # Trigger the deploy of the new version.
 echo "Contents of config $config file: " && cat "$config"
-flyctl deploy --config "$config" --app "$app" --region "$region" --image "$image" --strategy immediate
+flyctl deploy --config "$config" --app "$app" --region "$region" --strategy immediate --vm-memory 512
 
 # Make some info available to the GitHub workflow.
 flyctl status --app "$app" --json >status.json
