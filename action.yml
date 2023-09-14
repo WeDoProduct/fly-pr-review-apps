@@ -30,7 +30,7 @@ inputs:
   vm:
     description: Set app VM to a named size, eg. shared-cpu-1x, dedicated-cpu-1x, dedicated-cpu-2x etc. (defaults to shared-cpu-1x)
   memory:
-    description: Set app VM memory (defaults to 256 megabytes)
+    description: Set app VM memory
+    default: 256
   count:
     description: Set app VM count to the given value (defaults to 1)
-
