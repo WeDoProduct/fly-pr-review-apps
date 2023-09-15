@@ -29,7 +29,7 @@ if ! echo "$app" | grep "$PR_NUMBER"; then
 fi
 
 # PR was closed - remove the Fly app if one exists and exit.
-if [ "$EVENT_TYPE" = "closed" ] || [ "$EVENT_TYPE" = "unlabeled" ]; then
+if [[ flyctl status --app "$app" && ( "$EVENT_TYPE" = "closed" || "$EVENT_TYPE" = "unlabeled" ) ]]; then
   flyctl apps destroy "$app" -y || true
   exit 0
 fi
