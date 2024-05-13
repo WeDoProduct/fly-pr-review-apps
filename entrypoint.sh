@@ -38,7 +38,7 @@ fi
 if ! flyctl status --app "$app"; then
   # Backup the original config file since 'flyctl launch' messes up the [build.args] section
   cp "$config" "$config.bak"
-  flyctl launch --no-deploy --copy-config --name "$app" --region "$region" --org "$org" --dockerfile Dockerfile
+  flyctl launch --no-deploy --copy-config --name "$app" --regions "$region" --org "$org" --dockerfile Dockerfile
   # Restore the original config file
   cp "$config.bak" "$config"
 fi
@@ -53,7 +53,7 @@ fi
 
 # Trigger the deploy of the new version.
 echo "Contents of config $config file: " && cat "$config"
-flyctl deploy --config "$config" --app "$app" --region "$region" --strategy immediate --vm-memory "$INPUT_MEMORY"
+flyctl deploy --config "$config" --app "$app" --regions "$region" --strategy immediate --vm-memory "$INPUT_MEMORY"
 
 # Make some info available to the GitHub workflow.
 flyctl status --app "$app" --json >status.json
